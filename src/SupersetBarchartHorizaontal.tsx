@@ -16,9 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useEffect, createRef } from 'react';
-import { styled } from '@superset-ui/core';
-import { SupersetBarchartHorizaontalProps, SupersetBarchartHorizaontalStylesProps } from './types';
+import React, { useEffect } from 'react';
+import { SupersetBarchartHorizaontalProps } from './types';
 import * as d3 from 'd3';
 
 // The following Styles component is a <div> element, which has been styled using Emotion
@@ -28,44 +27,6 @@ import * as d3 from 'd3';
 // imported from @superset-ui/core. For constiables available, please visit
 // https://github.com/apache-superset/superset-ui/blob/master/packages/superset-ui-core/src/style/index.ts
 
-const Styles = styled.div<SupersetBarchartHorizaontalStylesProps>`
-  background-color: ${({ theme }) => theme.colors.secondary.light2};
-  padding: ${({ theme }) => theme.gridUnit * 4}px;
-  border-radius: ${({ theme }) => theme.gridUnit * 2}px;
-  height: ${({ height }) => height}px;
-  width: ${({ width }) => width}px;
-
-  h3 {
-    /* You can use your props to control CSS! */
-    margin-top: 0;
-    margin-bottom: ${({ theme }) => theme.gridUnit * 3}px;
-    font-size: ${({ theme, headerFontSize }) => theme.typography.sizes[headerFontSize]}px;
-    font-weight: ${({ theme, boldText }) => theme.typography.weights[boldText ? 'bold' : 'normal']};
-  }
-
-  pre {
-    height: ${({ theme, headerFontSize, height }) => (
-    height - theme.gridUnit * 12 - theme.typography.sizes[headerFontSize]
-  )}px;
-  }
-  .bar {
-    fill: #5f89ad;
-}
-
-.axis {
-    font-size: 13px;
-}
-
-.axis path,
-.axis line {
-    fill: none;
-    display: none;
-}
-
-.label {
-    font-size: 13px;
-}
-`;
 
 /**
  * ******************* WHAT YOU CAN BUILD HERE *******************
@@ -85,29 +46,6 @@ export default function SupersetBarchartHorizaontal(props: SupersetBarchartHoriz
     render();
   }, [props]);
 
-  const wrap = (text:any, width: any) => {
-    text.each(function() {
-      const text =  d3.select("#graphic").append("svg");
-      const words = text.text().split(/\s+/).reverse();
-      let word:any = '';
-      let line: any = [];
-      let lineNumber = 0;
-      const lineHeight = 1.1; // ems
-      const y = text.attr("y");
-      const dy = parseFloat(text.attr("dy"));
-      let tspan: any = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
-        while (word = words.pop()) {
-          line.push(word);
-          tspan.text(line.join(" "));
-          if (tspan.node().getComputedTextLength() > width) {
-            line.pop();
-            tspan.text(line.join(" "));
-            line = [word];
-            tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
-          }
-        }
-      });
-    }
   const render = () => {
 
     // create tooltip element  
@@ -176,8 +114,8 @@ export default function SupersetBarchartHorizaontal(props: SupersetBarchartHoriz
       .attr("class", "y axis")
       .call(yAxis)
       .selectAll(".tick text");
-      // .call(wrap, x.rangeBand());
-      // .call(wrap, x.rangeBand());
+    // .call(wrap, x.rangeBand());
+    // .call(wrap, x.rangeBand());
     svg.append('g').call(xAxis).attr('transform', `translate(0, ${svgHeight - 10})`);
 
 
@@ -218,7 +156,7 @@ export default function SupersetBarchartHorizaontal(props: SupersetBarchartHoriz
 
     // rotate yaxis label text
     svg.selectAll("y axis tick text")  // select all the text elements for the xaxis
-      .attr("transform",  (d) => "translate(" + svgHeight * -2 + "," + svgHeight + ")rotate(-45)");
+      .attr("transform", (d) => "translate(" + svgHeight * -2 + "," + svgHeight + ")rotate(-45)");
   }
   return (
     <div id='graphic'></div>

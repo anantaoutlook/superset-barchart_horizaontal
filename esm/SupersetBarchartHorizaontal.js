@@ -1,7 +1,3 @@
-var _templateObject;
-
-function _taggedTemplateLiteralLoose(strings, raw) { if (!raw) { raw = strings.slice(0); } strings.raw = raw; return strings; }
-
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -21,63 +17,12 @@ function _taggedTemplateLiteralLoose(strings, raw) { if (!raw) { raw = strings.s
  * under the License.
  */
 import React, { useEffect } from 'react';
-import { styled } from '@superset-ui/core';
 import * as d3 from 'd3'; // The following Styles component is a <div> element, which has been styled using Emotion
 // For docs, visit https://emotion.sh/docs/styled
 // Theming constiables are provided for your use via a ThemeProvider
 // imported from @superset-ui/core. For constiables available, please visit
 // https://github.com/apache-superset/superset-ui/blob/master/packages/superset-ui-core/src/style/index.ts
 
-var Styles = styled.div(_templateObject || (_templateObject = _taggedTemplateLiteralLoose(["\n  background-color: ", ";\n  padding: ", "px;\n  border-radius: ", "px;\n  height: ", "px;\n  width: ", "px;\n\n  h3 {\n    /* You can use your props to control CSS! */\n    margin-top: 0;\n    margin-bottom: ", "px;\n    font-size: ", "px;\n    font-weight: ", ";\n  }\n\n  pre {\n    height: ", "px;\n  }\n  .bar {\n    fill: #5f89ad;\n}\n\n.axis {\n    font-size: 13px;\n}\n\n.axis path,\n.axis line {\n    fill: none;\n    display: none;\n}\n\n.label {\n    font-size: 13px;\n}\n"])), _ref => {
-  var {
-    theme
-  } = _ref;
-  return theme.colors.secondary.light2;
-}, _ref2 => {
-  var {
-    theme
-  } = _ref2;
-  return theme.gridUnit * 4;
-}, _ref3 => {
-  var {
-    theme
-  } = _ref3;
-  return theme.gridUnit * 2;
-}, _ref4 => {
-  var {
-    height
-  } = _ref4;
-  return height;
-}, _ref5 => {
-  var {
-    width
-  } = _ref5;
-  return width;
-}, _ref6 => {
-  var {
-    theme
-  } = _ref6;
-  return theme.gridUnit * 3;
-}, _ref7 => {
-  var {
-    theme,
-    headerFontSize
-  } = _ref7;
-  return theme.typography.sizes[headerFontSize];
-}, _ref8 => {
-  var {
-    theme,
-    boldText
-  } = _ref8;
-  return theme.typography.weights[boldText ? 'bold' : 'normal'];
-}, _ref9 => {
-  var {
-    theme,
-    headerFontSize,
-    height
-  } = _ref9;
-  return height - theme.gridUnit * 12 - theme.typography.sizes[headerFontSize];
-});
 /**
  * ******************* WHAT YOU CAN BUILD HERE *******************
  *  In essence, a chart is given a few key ingredients to work with:
@@ -97,33 +42,6 @@ export default function SupersetBarchartHorizaontal(props) {
   useEffect(() => {
     render();
   }, [props]);
-
-  var wrap = (text, width) => {
-    text.each(function () {
-      var text = d3.select("#graphic").append("svg");
-      var words = text.text().split(/\s+/).reverse();
-      var word = '';
-      var line = [];
-      var lineNumber = 0;
-      var lineHeight = 1.1; // ems
-
-      var y = text.attr("y");
-      var dy = parseFloat(text.attr("dy"));
-      var tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
-
-      while (word = words.pop()) {
-        line.push(word);
-        tspan.text(line.join(" "));
-
-        if (tspan.node().getComputedTextLength() > width) {
-          line.pop();
-          tspan.text(line.join(" "));
-          line = [word];
-          tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
-        }
-      }
-    });
-  };
 
   var render = () => {
     // create tooltip element  
