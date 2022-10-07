@@ -25,6 +25,7 @@
     "access": "public"
   },
   "dependencies": {
+    "@airbnb/config-babel": "^3.1.0",
     "@superset-ui/chart-controls": "1.5.0",
     "@superset-ui/core": "1.5.0",
     "@types/d3": "^7.4.0",
@@ -34,7 +35,6 @@
     "react": "^16.13.1"
   },
   "devDependencies": {
-    "@airbnb/config-babel": "^2.0.1",
     "@babel/cli": "^7.16.0",
     "@types/jest": "^26.0.24",
     "@types/mocha": "^10.0.0",

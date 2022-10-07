@@ -16,7 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { QueryFormData, supersetTheme, TimeseriesDataRecord } from '@superset-ui/core';
+import {
+  QueryFormData,
+  supersetTheme,
+  TimeseriesDataRecord,
+} from '@superset-ui/core';
 
 export interface SupersetBarchartHorizaontalStylesProps {
   height: number;
@@ -33,8 +37,9 @@ export type SupersetBarchartHorizaontalQueryFormData = QueryFormData &
   SupersetBarchartHorizaontalStylesProps &
   SupersetBarchartHorizaontalCustomizeProps;
 
-export type SupersetBarchartHorizaontalProps = SupersetBarchartHorizaontalStylesProps &
-  SupersetBarchartHorizaontalCustomizeProps & {
-    data: TimeseriesDataRecord[];
-    // add typing here for the props you pass in from transformProps.ts!
-  };
+export type SupersetBarchartHorizaontalProps =
+  SupersetBarchartHorizaontalStylesProps &
+    SupersetBarchartHorizaontalCustomizeProps & {
+      data: TimeseriesDataRecord[];
+      // add typing here for the props you pass in from transformProps.ts!
+    };
