@@ -43,6 +43,38 @@ export default function SupersetBarchartHorizaontal(props) {
     render();
   }, [props]);
 
+  var wrap = (text, width) => {
+    console.log(text._groups, width);
+    text.each(function () {
+      var text = d3.select(this);
+      var words = text.text().split(/\s+/).reverse();
+      var word;
+      var line = [];
+      var lineNumber = 1;
+      var lineHeight = 0.6; // ems
+
+      var x = text.attr("x");
+      var y = text.attr("y");
+      var dy = parseFloat(text.attr("dy")) || 0;
+      var tspan = text.text(null).append("tspan").attr("x", x).attr("y", y).attr("dy", 0.2 + "em");
+      console.log('words', words);
+
+      while (word = words.pop()) {
+        line.push(word);
+        tspan.text(line.join(" "));
+        var tspanWidth = tspan.node().getComputedTextLength();
+        console.log('tspanWidth', tspanWidth);
+
+        if (tspanWidth > width) {
+          line.pop();
+          tspan.text(line.join(" "));
+          line = [word];
+          tspan = text.append("tspan").attr("x", x).attr("y", y).attr("dy", lineNumber * lineHeight + dy + "em").text(word);
+        }
+      }
+    });
+  };
+
   var render = () => {
     // create tooltip element  
     var tooltip = d3.select("body").append("div").attr("class", "d3-tooltip").style("position", "absolute").style("z-index", "10").style("visibility", "hidden").style("padding", "5px 10px").style("background", "#fff").style("border-radius", "5px").style("color", "#000").text("a simple tooltip"); //sort bars based on value
@@ -51,17 +83,17 @@ export default function SupersetBarchartHorizaontal(props) {
       return d3.ascending(a.state_count, b.state_count);
     }); //set up svg using margin conventions - we'll need plenty of room on the left for labels
 
+    var maxCharsLength = Math.max(...newData.map(o => o.state.length));
     var margin = {
       top: 0,
       right: 20,
       bottom: 15,
-      left: 100
+      left: maxCharsLength * 3.2
     };
     var svgWidth = width - margin.left - margin.right;
     var svgHeight = height - margin.top - margin.bottom;
     d3.select("#graphic").selectAll('svg').remove();
-    var svg = d3.select("#graphic").append("svg").attr("width", svgWidth + margin.left + margin.right).attr("height", svgHeight + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")"); // let labelWidth = 0;
-
+    var svg = d3.select("#graphic").append("svg").attr("width", svgWidth + margin.left + margin.right).attr("height", svgHeight + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + 10 + ")");
     var maxCount = Math.max(...newData.map(o => o.state_count));
     var x = d3.scaleLinear().range([0, svgWidth]).domain([0, maxCount]);
     var y = d3.scaleBand().domain(newData.map((d, i) => d.state)).rangeRound([0, svgHeight]).padding(0.1); //make y axis to show bar names
@@ -70,9 +102,7 @@ export default function SupersetBarchartHorizaontal(props) {
     var yAxis = d3.axisLeft(y).scale(y).ticks(newData.length).tickSize(4).tickFormat(x => "" + x).tickSizeOuter(0);
     var xAxis = d3.axisBottom(x).scale(x) //no tick marks
     .tickSize(4).ticks(newData.length).tickFormat(x => "" + x).tickSizeOuter(0);
-    svg.append("g").attr("class", "y axis").call(yAxis).selectAll(".tick text"); // .call(wrap, x.rangeBand());
-    // .call(wrap, x.rangeBand());
-
+    svg.append("g").attr("class", "y axis").call(yAxis).selectAll("g").selectAll(".tick text").style("font-size", maxCharsLength < 40 ? 10 : 9).call(wrap, margin.left);
     svg.append('g').call(xAxis).attr('transform', "translate(0, " + (svgHeight - 10) + ")");
     svg.selectAll('.bar').remove();
     var bars = svg.selectAll(".bar").data(newData).enter().append("g"); //append rects
@@ -87,10 +117,7 @@ export default function SupersetBarchartHorizaontal(props) {
     }).on("mouseout", function () {
       tooltip.html("").style("visibility", "hidden");
       d3.select(this).attr("fill", '#1fa8c9');
-    }); // rotate yaxis label text
-
-    svg.selectAll("y axis tick text") // select all the text elements for the xaxis
-    .attr("transform", d => "translate(" + svgHeight * -2 + "," + svgHeight + ")rotate(-45)");
+    });
   };
 
   return /*#__PURE__*/React.createElement("div", {

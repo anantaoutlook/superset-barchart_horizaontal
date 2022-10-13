@@ -36,6 +36,7 @@ import * as d3 from 'd3';
  *  * FormData (your controls!) provided as props by transformProps.ts
  */
 
+
 export default function SupersetBarchartHorizaontal(props: SupersetBarchartHorizaontalProps) {
   // height and width are the height and width of the DOM element as it exists in the dashboard.
   // There is also a `data` prop, which is, of course, your DATA 🎉
@@ -45,6 +46,43 @@ export default function SupersetBarchartHorizaontal(props: SupersetBarchartHoriz
   useEffect(() => {
     render();
   }, [props]);
+
+  const wrap = (text: any, width: any) => {
+    console.log(text._groups, width);
+    text.each(function(this: any) {
+      const text = d3.select(this);
+      const words = text.text().split(/\s+/).reverse();
+      let word;
+      let line: any = [];
+      let lineNumber = 1;
+      const lineHeight = 0.6; // ems
+      const x = text.attr("x");
+      const y = text.attr("y");
+      const dy = parseFloat(text.attr("dy")) || 0;
+      let tspan: any = text.text(null)
+        .append("tspan")
+        .attr("x", x)
+        .attr("y", y)
+        .attr("dy", 0.2 + "em");
+      console.log('words', words);
+      while (word = words.pop()) {
+        line.push(word);
+        tspan.text(line.join(" "));
+        const tspanWidth = tspan.node().getComputedTextLength(); 
+        console.log('tspanWidth', tspanWidth);
+        if (tspanWidth > width) {
+          line.pop();
+          tspan.text(line.join(" "));
+          line = [word];
+          tspan = text.append("tspan")
+            .attr("x", x)
+            .attr("y", y)
+            .attr("dy", lineNumber * lineHeight + dy + "em")
+            .text(word);
+        }
+      }
+    });
+  }
 
   const render = () => {
 
@@ -67,22 +105,23 @@ export default function SupersetBarchartHorizaontal(props: SupersetBarchartHoriz
     })
 
     //set up svg using margin conventions - we'll need plenty of room on the left for labels
+    const maxCharsLength = Math.max(...newData.map((o: any) => o.state.length));
     const margin = {
       top: 0,
       right: 20,
       bottom: 15,
-      left: 100
+      left: maxCharsLength * 3.2
     };
-
     const svgWidth = width - margin.left - margin.right;
     const svgHeight = height - margin.top - margin.bottom;
+
     d3.select("#graphic").selectAll('svg').remove();
     const svg = d3.select("#graphic").append("svg")
       .attr("width", svgWidth + margin.left + margin.right)
       .attr("height", svgHeight + margin.top + margin.bottom)
       .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-    // let labelWidth = 0;
+      .attr("transform", "translate(" + margin.left + "," + 10 + ")");
+
     const maxCount = Math.max(...newData.map((o: any) => o.state_count));
     const x = d3.scaleLinear()
       .range([0, svgWidth])
@@ -113,9 +152,11 @@ export default function SupersetBarchartHorizaontal(props: SupersetBarchartHoriz
     svg.append("g")
       .attr("class", "y axis")
       .call(yAxis)
-      .selectAll(".tick text");
-    // .call(wrap, x.rangeBand());
-    // .call(wrap, x.rangeBand());
+      .selectAll("g")
+      .selectAll(".tick text")
+      .style("font-size", maxCharsLength < 40 ? 10 : 9)
+      .call(wrap, margin.left);
+
     svg.append('g').call(xAxis).attr('transform', `translate(0, ${svgHeight - 10})`);
 
 
@@ -153,10 +194,6 @@ export default function SupersetBarchartHorizaontal(props: SupersetBarchartHoriz
         tooltip.html(``).style("visibility", "hidden");
         d3.select(this).attr("fill", '#1fa8c9');
       });
-
-    // rotate yaxis label text
-    svg.selectAll("y axis tick text")  // select all the text elements for the xaxis
-      .attr("transform", (d) => "translate(" + svgHeight * -2 + "," + svgHeight + ")rotate(-45)");
   }
   return (
     <div id='graphic'></div>
