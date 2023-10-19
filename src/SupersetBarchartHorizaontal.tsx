@@ -42,14 +42,14 @@ export default function SupersetBarchartHorizaontal(props: SupersetBarchartHoriz
   // There is also a `data` prop, which is, of course, your DATA 🎉
   const { data, height, width } = props;
 
-
+  console.log("dd", data)
   useEffect(() => {
     render();
   }, [props]);
 
   const wrap = (text: any, width: any) => {
     console.log(text._groups, width);
-    text.each(function(this: any) {
+    text.each(function (this: any) {
       const text = d3.select(this);
       const words = text.text().split(/\s+/).reverse();
       let word;
@@ -68,7 +68,7 @@ export default function SupersetBarchartHorizaontal(props: SupersetBarchartHoriz
       while (word = words.pop()) {
         line.push(word);
         tspan.text(line.join(" "));
-        const tspanWidth = tspan.node().getComputedTextLength(); 
+        const tspanWidth = tspan.node().getComputedTextLength();
         console.log('tspanWidth', tspanWidth);
         if (tspanWidth > width) {
           line.pop();
@@ -104,8 +104,11 @@ export default function SupersetBarchartHorizaontal(props: SupersetBarchartHoriz
       return d3.ascending(a.state_count, b.state_count);
     })
 
+    console.log('newdata', newData);
+
     //set up svg using margin conventions - we'll need plenty of room on the left for labels
-    const maxCharsLength = Math.max(...newData.map((o: any) => o.state.length));
+    // const maxCharsLength = Math.max(...newData.map((o: any) => o.state.length));
+    const maxCharsLength = 50;
     const margin = {
       top: 0,
       right: 20,

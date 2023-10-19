@@ -39,6 +39,7 @@ export default function SupersetBarchartHorizaontal(props) {
     height,
     width
   } = props;
+  console.log("dd", data);
   useEffect(() => {
     render();
   }, [props]);
@@ -81,9 +82,11 @@ export default function SupersetBarchartHorizaontal(props) {
 
     var newData = data.sort(function (a, b) {
       return d3.ascending(a.state_count, b.state_count);
-    }); //set up svg using margin conventions - we'll need plenty of room on the left for labels
+    });
+    console.log('newdata', newData); //set up svg using margin conventions - we'll need plenty of room on the left for labels
+    // const maxCharsLength = Math.max(...newData.map((o: any) => o.state.length));
 
-    var maxCharsLength = Math.max(...newData.map(o => o.state.length));
+    var maxCharsLength = 50;
     var margin = {
       top: 0,
       right: 20,
